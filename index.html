@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAMON.G</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            background-image: url('bg.jpg'); /* Ganti dengan nama file gambar latar belakang */
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* Mencegah teks disalin */
+        }
+
+        h1 {
+            color: #ff69b4; /* Default warna judul */
+            cursor: pointer;
+        }
+
+        #lyrics {
+            background-image: url('lyric-bg.jpg'); /* Ganti dengan nama file gambar background khusus lirik */
+            background-size: cover;
+            background-position: center;
+            color: #000000; /* Warna teks lirik */
+            font-size: 30px; /* Ukuran teks lirik yang lebih besar */
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            max-width: 600px;
+            height: 150px; /* Sesuaikan tinggi untuk lirik */
+            overflow: hidden;
+            transition: opacity 0.5s ease-in-out;
+            text-shadow: 0 0 35px rgba(252, 182, 193); /* Cahaya pada teks */
+            animation: blink 2s infinite; /* Efek kelap-kelip lambat */
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffc0cb;
+            color: white;
+        }
+
+        #repeatButton {
+            display: none; /* Disembunyikan hingga lagu selesai */
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="songTitle">MENCERITAKANMU</h1>
+    <div id="lyrics"></div>
+    <button id="playButton">Mulai</button>
+    <button id="repeatButton">Ulangi</button>
+
+    <audio id="audio" src="ga1.mp3" preload="auto"></audio> <!-- Ganti dengan nama file musik -->
+
+    <script>
+        const lyricsData = [
+            { text: "Sebentar saja ku ingin cerita.👩‍❤️‍👨🗣️", delay: 3, duration: 6 },
+            { text: "Tentang dia yang teristimewa...🤩💁🏻👑", duration: 7 },
+            { text: "Kadang lucu,🧏🏻kadang menyebalkan ya...🙎🏻😜🤏🏻", duration: 6 },
+            { text: "Oh.. tapi aku suka...🫶🏻👩‍❤️‍👨", duration: 6 },
+            { text: "Dia tak pandai merangkai kata-kata...🤭📝🐛🦋", duration: 6 },
+            { text: "Romantisnya pun seadanya...✨🙆🏻", duration: 6 },
+            { text: "Tapi aku bingung entah kenapa...🤷🏻👐🏻", duration: 6 },
+            { text: "Oh.. nyaman di dekatnya...👩‍❤️‍👨🫰🏻", duration: 6 },
+            { text: "duhhhhh tingal cari background poto nya ni,bouleh kiwkiwkiw 🤪🫵🏻🙇🏻🙌🏻😚🤳🏻 :>", duration: 1 }
+        ];
+
+        let lyricIndex = 0;
+        const audio = document.getElementById('audio');
+        const playButton = document.getElementById('playButton');
+        const repeatButton = document.getElementById('repeatButton');
+        const songTitle = document.getElementById('songTitle');
+        const lyricsDiv = document.getElementById('lyrics');
+
+        function showFirstLyric() {
+            const firstLyric = lyricsData[0];
+            const delayBeforeShowing = firstLyric.delay * 1000;
+            const duration = firstLyric.duration * 1000;
+
+            setTimeout(() => {
+                lyricsDiv.style.opacity = 0;
+                setTimeout(() => {
+                    lyricsDiv.innerText = firstLyric.text;
+                    lyricsDiv.style.opacity = 1;
+                }, 500);
+
+                setTimeout(() => {
+                    lyricIndex++;
+                    showLyric();
+                }, duration);
+            }, delayBeforeShowing);
+        }
+
+        function showLyric() {
+            if (lyricIndex < lyricsData.length) {
+                const { text, duration } = lyricsData[lyricIndex];
+                const delay = duration * 1000;
+
+                lyricsDiv.style.opacity = 0;
+                setTimeout(() => {
+                    lyricsDiv.innerText = text;
+                    lyricsDiv.style.opacity = 1;
+                }, 500);
+
+                lyricIndex++;
+
+                if (lyricIndex < lyricsData.length) {
+                    setTimeout(showLyric, delay);
+                } else {
+                    setTimeout(() => {
+                        repeatButton.style.display = "block"; // Tampilkan tombol ulangi
+                    }, delay);
+                }
+            }
+        }
+
+        playButton.addEventListener('click', () => {
+            audio.play();
+            lyricIndex = 0;
+            lyricsDiv.innerText = "";
+            songTitle.style.display = "none"; // Sembunyikan judul
+            playButton.style.display = "none"; // Sembunyikan tombol mulai
+            showFirstLyric();
+        });
+
+        repeatButton.addEventListener('click', () => {
+            audio.currentTime = 0;
+            audio.play();
+            repeatButton.style.display = "none"; // Sembunyikan tombol ulangi
+            lyricIndex = 0;
+            showFirstLyric();
+        });
+
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault(); // Mencegah klik kanan
+        });
+    </script>
+
+</body>
+</html>
